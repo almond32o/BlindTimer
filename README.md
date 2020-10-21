@@ -1,4 +1,4 @@
-# blindtimer
+# BlindTimer
 
 ## Project setup
 ```
