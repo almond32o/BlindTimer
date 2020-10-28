@@ -37,27 +37,35 @@
       </v-btn>
     </v-app-bar>
 
+  <!--
     <v-main>
       <HelloWorld/>
     </v-main>
+  -->
     <v-main>
       <Timer :blinds="blinds"/>
+    </v-main>
+    <v-main>
+    <Structure :blinds="blinds"/>
+    <v-btn @click="show">S</v-btn>
     </v-main>
   </v-app>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import HelloWorld from './components/HelloWorld.vue';
+// import HelloWorld from './components/HelloWorld.vue';
 import Timer from './components/Timer.vue'
 import Blind from './types/blind'
+import Structure from './components/Structure.vue'
 
 export default Vue.extend({
   name: 'App',
 
   components: {
-    HelloWorld,
-    Timer
+    // HelloWorld,
+    Timer,
+    Structure
   },
 
   data: () => ({
@@ -66,7 +74,10 @@ export default Vue.extend({
       new Blind(1,2,4,0,1),
       new Blind(2,1000,2000,2000,1),
       new Blind(3,-1,-1,0,1)
-      ]
+    ]
   }),
+  methods: {
+
+  }
 });
 </script>
