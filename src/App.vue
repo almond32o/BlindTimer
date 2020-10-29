@@ -44,10 +44,7 @@
   -->
     <v-main>
       <Timer :blinds="blinds"/>
-    </v-main>
-    <v-main>
-    <Structure :blinds="blinds"/>
-    <v-btn @click="show">S</v-btn>
+      <Structure :blinds="blinds"/>
     </v-main>
   </v-app>
 </template>

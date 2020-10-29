@@ -1,18 +1,20 @@
 <template>
   <v-container>
     <v-main>
-      <v-data-table
-        :headers="headers"
-        :items="blindsTable"
-        :items-per-page="5"
-        dense
-        class="elevation-1"
-      />
-    </v-main>
-    <v-main>
-      <v-btn fab @click="add">
-        <v-icon>mdi-plus</v-icon>
-      </v-btn>
+      <v-row justify="center">
+        <v-btn icon outlined @click="add">
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
+      </v-row>
+      <v-row justify="center">
+        <v-data-table
+          :headers="headers"
+          :items="blindsTable"
+          :items-per-page="5"
+          dense
+          class="elevation-1"
+        />
+      </v-row>
     </v-main>
   </v-container>
 </template>

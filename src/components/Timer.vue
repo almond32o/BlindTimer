@@ -25,16 +25,28 @@
         </v-row>
       </v-card>
     </v-row>
-    <v-row class="text-center">
-      <v-col>
-        <v-btn v-if="!isActive" fab @click="start">
-          <v-icon large>mdi-play</v-icon>
+    <v-container>
+      <v-layout justify-space-around>
+        <v-btn icon outlined @click="addLevel(-1)">
+          <v-icon>mdi-skip-previous</v-icon>
         </v-btn>
-        <v-btn v-else fab @click="stop">
-          <v-icon large>mdi-pause</v-icon>
+        <v-btn icon outlined @click="addTime(30)">
+          <v-icon>mdi-chevron-double-left</v-icon>
         </v-btn>
-      </v-col>
-    </v-row>
+        <v-btn v-if="!isActive" icon outlined @click="start">
+          <v-icon>mdi-play</v-icon>
+        </v-btn>
+        <v-btn v-else icon outlined @click="stop">
+          <v-icon>mdi-pause</v-icon>
+        </v-btn>
+        <v-btn icon outlined @click="addTime(-30)">
+          <v-icon>mdi-chevron-double-right</v-icon>
+        </v-btn>
+        <v-btn icon outlined @click="addLevel(1)">
+          <v-icon>mdi-skip-next</v-icon>
+        </v-btn>
+      </v-layout>
+    </v-container>
   </v-container>
 </template>
 
@@ -56,10 +68,10 @@ export default Vue.extend({
   },
   methods: {
     count(): void {
-      if (this.sec === 0) {
+      if (this.isActive && this.sec === 0) {
         this.levelUp();
       }
-      if (this.isActive) {
+      if(this.isActive) { 
         this.sec--;
       }
     },
@@ -79,6 +91,12 @@ export default Vue.extend({
         this.innerLevel++
         this.resetTime();
       }
+    },
+    addTime(n: number): void {
+      this.sec = Math.max(0, Math.min(this.blinds[this.innerLevel].time * 60, this.sec + n));
+    },
+    addLevel(n: number): void {
+      this.innerLevel = Math.max(0, Math.min(this.blinds.length - 1, this.innerLevel + n));
     }
   },
   computed: {
@@ -118,7 +136,4 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.border {
-  border: solid;
-}
 </style>
