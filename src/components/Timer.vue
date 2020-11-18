@@ -26,26 +26,32 @@
       </v-card>
     </v-row>
     <v-container>
-      <v-layout justify-space-around>
-        <v-btn icon outlined @click="addLevel(-1)">
-          <v-icon>mdi-skip-previous</v-icon>
-        </v-btn>
-        <v-btn icon outlined @click="addTime(30)">
-          <v-icon>mdi-chevron-double-left</v-icon>
-        </v-btn>
-        <v-btn v-if="!isActive" icon outlined @click="start">
-          <v-icon>mdi-play</v-icon>
-        </v-btn>
-        <v-btn v-else icon outlined @click="stop">
-          <v-icon>mdi-pause</v-icon>
-        </v-btn>
-        <v-btn icon outlined @click="addTime(-30)">
-          <v-icon>mdi-chevron-double-right</v-icon>
-        </v-btn>
-        <v-btn icon outlined @click="addLevel(1)">
-          <v-icon>mdi-skip-next</v-icon>
-        </v-btn>
-      </v-layout>
+      <v-row justify="center">
+        <v-card width="300" flat>
+          <v-container>
+            <v-row justify="space-between">
+              <v-btn icon outlined @click="addLevel(-1)">
+                <v-icon>mdi-skip-previous</v-icon>
+              </v-btn>
+              <v-btn icon outlined @click="addTime(30)">
+                <v-icon>mdi-chevron-double-left</v-icon>
+              </v-btn>
+              <v-btn v-if="!isActive" icon outlined @click="start">
+                <v-icon>mdi-play</v-icon>
+              </v-btn>
+              <v-btn v-else icon outlined @click="stop">
+                <v-icon>mdi-pause</v-icon>
+              </v-btn>
+              <v-btn icon outlined @click="addTime(-30)">
+                <v-icon>mdi-chevron-double-right</v-icon>
+              </v-btn>
+              <v-btn icon outlined @click="addLevel(1)">
+              <v-icon>mdi-skip-next</v-icon>
+            </v-btn>
+          </v-row>
+          </v-container>
+        </v-card>
+      </v-row>
     </v-container>
   </v-container>
 </template>
