@@ -3,7 +3,7 @@
     <v-row justify="center">
       <v-data-table
         :headers="headers"
-        :items="blindsTable"
+        :items="blinds_"
         :items-per-page="-1"
         disable-sort
         dense
@@ -22,6 +22,14 @@
                     v-bind="attrs"
                     v-on="on"
                   >Add Blind</v-btn>
+                  <v-btn
+                    color="primary"
+                    dark
+                    class="mb-2"
+                    v-bind="attrs"
+                    v-on="on"
+                    @click="setItemToBreak"
+                  >Add Break</v-btn>
                 </template>
                 <v-card>
                   <v-card-title>
@@ -32,6 +40,7 @@
                       <v-row>
                         <v-col>
                           <v-text-field
+                            v-bind:disabled="editedIsBreak"
                             v-model="editedItem.sb"
                             type="number"
                             label="SB"
@@ -39,6 +48,7 @@
                         </v-col>
                         <v-col>
                           <v-text-field
+                            v-bind:disabled="editedIsBreak"
                             v-model="editedItem.bb"
                             type="number"
                             label="BB"
@@ -46,7 +56,7 @@
                         </v-col>
                         <v-col>
                           <v-text-field
-                            v-bind:disabled="d"
+                            v-bind:disabled="editedIsBreak"
                             v-model="editedItem.ante"
                             type="number"
                             label="ANTE"
@@ -78,6 +88,7 @@
         </template>
       </v-data-table>
     </v-row>
+    <v-btn @click="debug">debug</v-btn>
   </v-container>
 </template>
 
@@ -97,8 +108,7 @@ export default Vue.extend({
         {
           text: 'LEVEL',
           align: 'start',
-          sortable: true,
-          value: 'id',
+          value: 'level',
         },
         {text: 'SB', value: 'sb'},
         {text: 'BB', value: 'bb'},
@@ -108,8 +118,7 @@ export default Vue.extend({
       ],
       dialog: false,
       editedItem: new Blind(0,0,0,0,0),
-      editedIndex: -1,
-      d: false
+      editedIndex: -1
     }
   },
   methods: {
@@ -124,24 +133,50 @@ export default Vue.extend({
     close(): void {
       this.editedItem = new Blind(0,0,0,0,0);
       this.dialog = false;
+      this.editedIndex = -1;
     },
     editItem(item: Blind): void {
       this.editedIndex = this.blinds_.indexOf(item);
       this.editedItem = Object.assign({}, item);
+      /*
+      new Blind(
+        item.level,
+        item.sb,
+        item.bb,
+        item.ante,
+        item.time
+      );
+      */
       this.dialog = true;
     },
     deleteItem(item: Blind): void {
       this.editedIndex = this.blinds_.indexOf(item);
       this.blinds_.splice(this.editedIndex, 1);
+      this.editedIndex = -1;
+    },
+    setItemToBreak(): void {
+      this.editedItem = new Blind('BREAK', null, null, null, 0);
+    },
+    debug(): void {
+      console.log(this.editedItem.level, this.editedItem.sb);
+    }
+  },
+  watch: {
+    blinds_: {
+      handler: function(): void {
+        let l = 1;
+        for(let i = 0; i < this.blinds_.length; i++) {
+          if (this.blinds_[i].level === 'BREAK') continue;
+          this.blinds_[i].level = l;
+          l++;
+        }
+      },
+      deep: true
     }
   },
   computed: {
-    blindsTable(): Array<Blind> {
-      const res = this.blinds_;
-      for(let i = 0; i < res.length; i++) {
-        res[i].id = i + 1;
-      }
-      return res
+    editedIsBreak(): boolean {
+      return this.editedItem.level === 'BREAK';
     }
   }
 })

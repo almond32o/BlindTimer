@@ -1,23 +1,23 @@
 export default class Blind {
-  id: number;
-  sb: number;
-  bb: number;
-  ante: number;
+  level: number | 'BREAK';
+  sb: number | null;
+  bb: number | null;
+  ante: number | null;
   time: number;
   constructor(
-    id: number,
-    sb: number,
-    bb: number,
-    ante: number,
+    level: number | 'BREAK',
+    sb: number | null,
+    bb: number | null,
+    ante: number | null,
     time: number
   ) {
-    this.id = id;
+    this.level = level;
     this.sb = sb;
     this.bb = bb;
     this.ante = ante;
     this.time = time;
   }
   isBreak(): boolean {
-    return this.sb <= 0;
+    return this.level === 'BREAK';
   }
 }

@@ -95,7 +95,7 @@ export default Vue.extend({
       new Blind(0,1,2,0,1),
       new Blind(1,2,4,0,1),
       new Blind(2,1000,2000,2000,1),
-      new Blind(3,-1,-1,0,1)
+      new Blind('BREAK',null,null,null,1)
     ],
     dialog: false
   }),
