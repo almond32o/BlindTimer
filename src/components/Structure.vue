@@ -95,6 +95,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import Blind from '@/types/blind'
+import { cloneDeep } from 'lodash'
 
 export default Vue.extend({
   name: 'Structure',
@@ -103,7 +104,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      blinds_: this.blinds,
+      blinds_: cloneDeep(this.blinds),
       headers: [
         {
           text: 'LEVEL',
@@ -138,15 +139,6 @@ export default Vue.extend({
     editItem(item: Blind): void {
       this.editedIndex = this.blinds_.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      /*
-      new Blind(
-        item.level,
-        item.sb,
-        item.bb,
-        item.ante,
-        item.time
-      );
-      */
       this.dialog = true;
     },
     deleteItem(item: Blind): void {
