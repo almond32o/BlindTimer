@@ -68,7 +68,6 @@ export default Vue.extend({
     return {
       innerLevel: 0,
       sec: 0,
-      timerObj: 0,
       isActive: false
     }
   },
@@ -77,7 +76,7 @@ export default Vue.extend({
       if (this.isActive && this.sec === 0) {
         this.levelUp();
       }
-      if(this.isActive) { 
+      if(this.isActive) {
         this.sec--;
       }
     },
@@ -135,7 +134,7 @@ export default Vue.extend({
     }
   },
   mounted(): void {
-    this.timerObj = setInterval(this.count, 100);
+    setInterval(this.count, 100);
     this.resetTime();
   }
 });
