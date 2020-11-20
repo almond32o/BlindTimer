@@ -1,95 +1,111 @@
 <template>
-  <v-container>
-    <v-row justify="center">
+  <v-row justify="center">
+    <v-col style="max-width:10rem">
+      <v-row justify="center">
+        <v-card flat style="position:fixed">
+            <v-row justify="center">
+                <v-btn dark class="mb-2" color="primary" width="5rem" @click="closeDialog">Close</v-btn>
+            </v-row>
+            <v-row justify="center">
+                <v-btn dark class="mb-2" color="primary" width="5rem" @click="closeDialogAndUpdate">OK</v-btn>
+            </v-row>
+        </v-card>
+      </v-row>
+    </v-col>
+    <v-col style="max-width:40vw">
       <v-data-table
         :headers="headers"
         :items="blinds_"
         :items-per-page="-1"
         disable-sort
         dense
-        hide-default-footer
-        class="elevation-1"
+        class="elevation-3"
       >
-        <template v-slot:footer>
-          <v-toolbar flat>
-            <v-row justify="space-around">
-              <v-dialog v-model="dialog" max-width="500">
-                <template v-slot:activator="{on,attrs}">
-                  <v-btn
-                    color="primary"
-                    dark
-                    class="mb-2"
-                    v-bind="attrs"
-                    v-on="on"
-                  >Add Blind</v-btn>
-                  <v-btn
-                    color="primary"
-                    dark
-                    class="mb-2"
-                    v-bind="attrs"
-                    v-on="on"
-                    @click="setItemToBreak"
-                  >Add Break</v-btn>
-                </template>
-                <v-card>
-                  <v-card-title>
-                    Add/Edit Blind
-                  </v-card-title>
-                  <v-card-text>
-                    <v-container>
-                      <v-row>
-                        <v-col>
-                          <v-text-field
-                            v-bind:disabled="editedIsBreak"
-                            v-model="editedItem.sb"
-                            type="number"
-                            label="SB"
-                          />
-                        </v-col>
-                        <v-col>
-                          <v-text-field
-                            v-bind:disabled="editedIsBreak"
-                            v-model="editedItem.bb"
-                            type="number"
-                            label="BB"
-                          />
-                        </v-col>
-                        <v-col>
-                          <v-text-field
-                            v-bind:disabled="editedIsBreak"
-                            v-model="editedItem.ante"
-                            type="number"
-                            label="ANTE"
-                          />
-                        </v-col>
-                        <v-col>
-                        <v-text-field
-                          v-model="editedItem.time"
-                          type="number"
-                          label="TIME"
-                        />
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                  </v-card-text>
-                  <v-card-actions>
-                    <v-spacer/>
-                    <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
-                    <v-btn color="blue darken-1" text @click="save">OK</v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
-            </v-row>
-          </v-toolbar>
-        </template>
         <template v-slot:item.actions="{ item }">
           <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
           <v-icon small class="mr-2" @click="deleteItem(item)">mdi-delete</v-icon>
         </template>
       </v-data-table>
-    </v-row>
-    <v-btn @click="debug">debug</v-btn>
-  </v-container>
+    </v-col>
+    <v-col style="max-width:10rem">
+      <v-row justify="center">
+        <v-dialog v-model="dialog" max-width="500">
+          <template v-slot:activator="{on,attrs}">
+            <v-card flat style="position:fixed">
+              <v-row justify="center">
+                <v-btn
+                  width="7rem"
+                  color="primary"
+                  dark
+                  class="mb-2"
+                  v-bind="attrs"
+                  v-on="on"
+                  @click="setItemToBreak"
+                >Add Break</v-btn>
+              </v-row>
+              <v-row justify="center">
+                <v-btn
+                width="7rem"
+                  color="primary"
+                  dark
+                  class="mb-2"
+                  v-bind="attrs"
+                  v-on="on"
+                >Add Blind</v-btn>
+              </v-row>
+            </v-card>
+          </template>
+          <v-card>
+            <v-card-title>
+              Add/Edit Blind
+            </v-card-title>
+            <v-card-text>
+              <v-container>
+                <v-row>
+                  <v-col>
+                    <v-text-field
+                      v-bind:disabled="editedIsBreak"
+                      v-model="editedItem.sb"
+                      type="number"
+                      label="SB"
+                    />
+                  </v-col>
+                  <v-col>
+                    <v-text-field
+                      v-bind:disabled="editedIsBreak"
+                      v-model="editedItem.bb"
+                      type="number"
+                      label="BB"
+                    />
+                  </v-col>
+                  <v-col>
+                    <v-text-field
+                      v-bind:disabled="editedIsBreak"
+                      v-model="editedItem.ante"
+                      type="number"
+                      label="ANTE"
+                    />
+                  </v-col>
+                  <v-col>
+                  <v-text-field
+                    v-model="editedItem.time"
+                    type="number"
+                    label="TIME"
+                  />
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer/>
+              <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
+              <v-btn color="blue darken-1" text @click="save">OK</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-row>
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">
@@ -151,6 +167,12 @@ export default Vue.extend({
     },
     debug(): void {
       console.log(this.editedItem.level, this.editedItem.sb);
+    },
+    closeDialog(): void {
+      this.$emit('close-dialog');
+    },
+    closeDialogAndUpdate(): void {
+      this.$emit('update-blinds', this.blinds_);
     }
   },
   watch: {
