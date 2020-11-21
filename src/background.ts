@@ -3,6 +3,8 @@
 import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+import path from 'path';
+
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Scheme must be registered before the app is ready
@@ -77,4 +79,29 @@ if (isDevelopment) {
       app.quit()
     })
   }
+}
+
+// fix the problem that audio files cannot play in electron:build
+// https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/872
+
+app.on('ready', async () => {
+  registerLocalAudioProtocol()
+})
+
+function registerLocalAudioProtocol () {
+  protocol.registerFileProtocol('local-audio', (request, callback) => {
+    const url = request.url.replace(/^local-audio:\/\//, '')
+    // Decode URL to prevent errors when loading filenames with UTF-8 chars or chars like "#"
+    const decodedUrl = decodeURI(url) // Needed in case URL contains spaces
+    try {
+      // eslint-disable-next-line no-undef
+      //@ts-ignore
+      return callback(path.join(__static, decodedUrl))
+    } catch (error) {
+      console.error(
+        'ERROR: registerLocalAudioProtocol: Could not get file path:',
+        error
+      )
+    }
+  })
 }

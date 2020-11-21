@@ -96,8 +96,8 @@
           </v-dialog>
         </v-row>
         <v-row justify="center" style="margin:1rem 0">
-          <v-btn fab @click="soundEnable=!soundEnable">
-            <v-icon v-if="soundEnable">mdi-volume-high</v-icon>
+          <v-btn fab @click="sound.enable=!sound.enable">
+            <v-icon v-if="sound.enable">mdi-volume-high</v-icon>
             <v-icon v-else>mdi-volume-off</v-icon>
           </v-btn>
         </v-row>
@@ -126,35 +126,22 @@ export default Vue.extend({
   data() {
     return {
       blinds: [ //Array<Blind>(),
-        new Blind(1,1,2,0,10),
+        new Blind(1,1,2,0,2),
         new Blind(2,2,4,0,10),
         new Blind('BREAK',null,null,null,5),
         new Blind(3,3,6,0,8),
         new Blind(4,5,10,10,8),
         new Blind(5,1000,2000,2000,1)
-        /*
-        new Blind('BREAK',null,null,null,0),
-        new Blind('BREAK',null,null,null,0),
-        new Blind('BREAK',null,null,null,0),
-        new Blind('BREAK',null,null,null,0),
-        new Blind('BREAK',null,null,null,0),
-        new Blind('BREAK',null,null,null,0),
-        new Blind('BREAK',null,null,null,0),
-        new Blind('BREAK',null,null,null,0),
-        new Blind('BREAK',null,null,null,0),
-        new Blind('BREAK',null,null,null,0),
-        new Blind('BREAK',null,null,null,0),
-        new Blind('BREAK',null,null,null,0),
-        new Blind('BREAK',null,null,null,0),
-        new Blind('BREAK',null,null,null,0),
-        new Blind('BREAK',null,null,null,0)
-       */
       ],
       lv: 0,
       sec: 0,
       isActive: false,
       dialog: false,
-      soundEnable: true
+      sound: {
+        enable: true,
+        oneminute: new Audio('local-audio://oneminute.wav'),
+        levelup: new Audio('local-audio://levelup.wav')
+      }
     }
   },
   methods: {
@@ -164,6 +151,12 @@ export default Vue.extend({
       }
       if(this.isActive) {
         this.sec--;
+        if (!this.sound.enable) return;
+        if (this.sec === 60) {
+          this.sound.oneminute.play();
+        } else if (this.sec === 0) {
+          this.sound.levelup.play();
+        }
       }
     },
     resetTime(): void {
