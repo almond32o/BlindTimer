@@ -1,62 +1,74 @@
 <template>
   <v-row>
-    <v-col style="max-width:20vw;text-align:center">
-      Level {{ this.blinds[this.innerLevel].level }}
+    <v-col class="level" style="max-width:20vw;text-align:center">
+      <div v-if="!currentIsBreak">
+        LEVEL {{ this.blinds[this.innerLevel].level }}
+      </div>
+      <div v-else>
+        ON BREAK
+      </div>
     </v-col>
     <v-col>
-      <v-row class="text-center">
-        <v-col class="timer indigo--text">
-          {{ formatTime }}
-        </v-col>
-      </v-row>
-      <v-row justify="center">
-        <v-card class="align-center" outlined width="400" align="center">
-          <v-row justify="space-between" align="center">
-            <v-col text-align="center">Blinds:</v-col>
-            <v-col text-align="center">{{ formatBlinds }}</v-col>
-          </v-row>
-          <v-row align="space-between">
-            <v-col text-align="center">Ante:</v-col>
-            <v-col text-align="center">{{ blinds[innerLevel].ante }}</v-col>
-          </v-row>
-        </v-card>
-      </v-row>
-      <v-row justify="center">
-        <v-card outlined width=400 align="center">
-          <v-row justify="space-between" align="center">
-            <v-col text-align="center">Next:</v-col>
-            <v-col text-align="center">{{ formatNextBlinds }}</v-col>
-          </v-row>
-        </v-card>
-      </v-row>
-      <v-container>
+      <v-row style="align-content:center;height:95vh">
+        <v-row class="text-center">
+          <v-col class="clock indigo--text">
+            {{ formatTime }}
+          </v-col>
+        </v-row>
         <v-row justify="center">
-          <v-card width="300" flat>
-            <v-container>
-              <v-row justify="space-between">
-                <v-btn icon outlined @click="addLevel(-1)">
-                  <v-icon>mdi-skip-previous</v-icon>
-                </v-btn>
-                <v-btn icon outlined @click="addTime(30)">
-                  <v-icon>mdi-chevron-double-left</v-icon>
-                </v-btn>
-                <v-btn v-if="!isActive" icon outlined @click="start">
-                  <v-icon>mdi-play</v-icon>
-                </v-btn>
-                <v-btn v-else icon outlined @click="stop">
-                  <v-icon>mdi-pause</v-icon>
-                </v-btn>
-                <v-btn icon outlined @click="addTime(-30)">
-                  <v-icon>mdi-chevron-double-right</v-icon>
-                </v-btn>
-                <v-btn icon outlined @click="addLevel(1)">
-                <v-icon>mdi-skip-next</v-icon>
-              </v-btn>
+          <v-card class="current" outlined width="60vw" style="margin: 0.5rem 0; padding:0 1em">
+            <v-row justify="space-between" align="center">
+              <v-col>BLINDS:</v-col>
+              <v-col style="text-align:right">{{ formatBlinds }}</v-col>
             </v-row>
-            </v-container>
+            <v-row align="space-between">
+              <v-col>ANTE:</v-col>
+              <v-col style="text-align:right">
+                <div v-if="!currentIsBreak">
+                  {{ blinds[innerLevel].ante }}
+                </div>
+                <div v-else> - </div>
+              </v-col>
+            </v-row>
           </v-card>
         </v-row>
-      </v-container>
+        <v-row justify="center">
+          <v-card class="next" outlined width=50vw style="padding:0 0.5em">
+            <v-row justify="space-between" align="center">
+              <v-col>NEXT:</v-col>
+              <v-col style="text-align:right">{{ formatNextBlinds }}</v-col>
+            </v-row>
+          </v-card>
+        </v-row>
+        <v-container>
+        <v-row justify="center">
+            <v-card flat width="15rem">
+              <v-container>
+                <v-row justify="space-between">
+                  <v-btn icon outlined @click="addLevel(-1)">
+                    <v-icon>mdi-skip-previous</v-icon>
+                  </v-btn>
+                  <v-btn icon outlined @click="addTime(30)">
+                    <v-icon>mdi-chevron-double-left</v-icon>
+                  </v-btn>
+                  <v-btn v-if="!isActive" icon outlined @click="start">
+                    <v-icon>mdi-play</v-icon>
+                  </v-btn>
+                  <v-btn v-else icon outlined @click="stop">
+                    <v-icon>mdi-pause</v-icon>
+                  </v-btn>
+                  <v-btn icon outlined @click="addTime(-30)">
+                    <v-icon>mdi-chevron-double-right</v-icon>
+                  </v-btn>
+                  <v-btn icon outlined @click="addLevel(1)">
+                    <v-icon>mdi-skip-next</v-icon>
+                  </v-btn>
+                </v-row>
+              </v-container>
+            </v-card>
+          </v-row>
+        </v-container>
+      </v-row>
     </v-col>
     <v-col style="max-width:20vw">
       <v-container>
@@ -69,21 +81,28 @@
             transition="dialog-bottom-transition"
           >
             <template v-slot:activator="{ on, attrs }">
-              <v-btn icon outlined v-bind="attrs" v-on="on">
+              <v-btn fab v-bind="attrs" v-on="on">
                 <v-icon>mdi-table</v-icon>
               </v-btn>
             </template>
-            <v-card>
-              <v-container>
-                <Structure
-                  :blinds="blinds"
-                  @update-blinds="updateBlinds"
-                  @close-dialog="dialog=false"
-                  :key="dialog"
-                />
-              </v-container>
-            </v-card>
+            <Structure
+              :blinds="blinds"
+              @update-blinds="updateBlinds"
+              @close-dialog="dialog=false"
+              :key="dialog"
+            />
           </v-dialog>
+        </v-row>
+        <v-row justify="center" style="margin:1rem 0">
+          <v-btn fab>
+            <v-icon v-if="soundEnable">mdi-volume-high</v-icon>
+            <v-icon v-else>mdi-volume-off</v-icon>
+          </v-btn>
+        </v-row>
+        <v-row justify="center">
+          <v-btn fab @click="changeTheme">
+            <v-icon>mdi-brightness-6</v-icon>
+          </v-btn>
         </v-row>
       </v-container>
     </v-col>
@@ -103,7 +122,13 @@ export default Vue.extend({
   data() {
     return {
       blinds: [
-        new Blind(1,0,0,0,0),
+        new Blind(1,1,2,0,10),
+        new Blind(2,2,4,0,10),
+        new Blind('BREAK',null,null,null,5),
+        new Blind(3,3,6,0,8),
+        new Blind(4,5,10,10,8),
+        new Blind(5,1000,2000,2000,1)
+        /*
         new Blind('BREAK',null,null,null,0),
         new Blind('BREAK',null,null,null,0),
         new Blind('BREAK',null,null,null,0),
@@ -119,11 +144,13 @@ export default Vue.extend({
         new Blind('BREAK',null,null,null,0),
         new Blind('BREAK',null,null,null,0),
         new Blind('BREAK',null,null,null,0)
+        */
       ],
       innerLevel: 0,
       sec: 0,
       isActive: false,
-      dialog: false
+      dialog: false,
+      soundEnable: false
     }
   },
   methods: {
@@ -160,7 +187,12 @@ export default Vue.extend({
     },
     updateBlinds(payload: Array<Blind>): void {
       this.blinds = payload;
+      this.innerLevel = 0;
+      this.resetTime();
       this.dialog = false;
+    },
+    changeTheme(): void {
+      this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
     }
   },
   computed: {
@@ -174,8 +206,8 @@ export default Vue.extend({
       return timeStrings[0] + ':' + timeStrings[1];
     },
     formatBlinds(): string {
-      if (this.blinds[this.innerLevel].isBreak()) {
-        return '';
+      if (this.currentIsBreak) {
+        return '-';
       }
       return this.blinds[this.innerLevel].sb
              + '/'
@@ -186,10 +218,13 @@ export default Vue.extend({
         return 'None'
       }
       if (this.blinds[this.innerLevel + 1].isBreak()) {
-        return 'Break (' + this.blinds[this.innerLevel + 1].time + 'min)'
+        return 'BREAK (' + this.blinds[this.innerLevel + 1].time + 'min)'
       }
       return this.blinds[this.innerLevel + 1].sb + '/' + this.blinds[this.innerLevel + 1].bb +
         '(' + this.blinds[this.innerLevel + 1].ante + ')'
+    },
+    currentIsBreak(): boolean {
+      return this.blinds[this.innerLevel].isBreak();
     }
   },
   mounted(): void {
@@ -200,7 +235,20 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.timer {
+.level {
+  font-size: 5vh;
+  user-select: none;
+}
+.clock {
   font-size: 20vh;
+  user-select: none;
+}
+.current {
+  font-size: 7vh;
+  user-select: none;
+}
+.next {
+  font-size: 5vh;
+  user-select: none;
 }
 </style>
