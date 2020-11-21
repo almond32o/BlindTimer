@@ -1,11 +1,14 @@
 <template>
   <v-row>
     <v-col class="level" style="max-width:20vw;text-align:center">
-      <div v-if="!currentIsBreak">
-        LEVEL {{ this.blinds[this.innerLevel].level }}
+      <div v-if="currentStatus==='EMPTY'">
+        EMPTY
+      </div>
+      <div v-else-if="currentStatus==='BREAK'">
+        ON BREAK
       </div>
       <div v-else>
-        ON BREAK
+        LEVEL {{ this.blinds[this.lv].level }}
       </div>
     </v-col>
     <v-col>
@@ -19,15 +22,14 @@
           <v-card class="current" outlined width="60vw" style="margin: 0.5rem 0; padding:0 1em">
             <v-row justify="space-between" align="center">
               <v-col>BLINDS:</v-col>
-              <v-col style="text-align:right">{{ formatBlinds }}</v-col>
+              <v-col style="text-align:right">
+                {{ formatBlinds }}
+              </v-col>
             </v-row>
             <v-row align="space-between">
               <v-col>ANTE:</v-col>
               <v-col style="text-align:right">
-                <div v-if="!currentIsBreak">
-                  {{ blinds[innerLevel].ante }}
-                </div>
-                <div v-else> - </div>
+                {{ formatAnte }}
               </v-col>
             </v-row>
           </v-card>
@@ -94,7 +96,7 @@
           </v-dialog>
         </v-row>
         <v-row justify="center" style="margin:1rem 0">
-          <v-btn fab>
+          <v-btn fab @click="soundEnable=!soundEnable">
             <v-icon v-if="soundEnable">mdi-volume-high</v-icon>
             <v-icon v-else>mdi-volume-off</v-icon>
           </v-btn>
@@ -114,6 +116,8 @@ import Vue from 'vue';
 import Blind from '@/types/blind'
 import Structure from '@/components/Structure.vue'
 
+type Status = 'EMPTY' | 'BREAK' | 'BLIND';
+
 export default Vue.extend({
   props: {},
   components: {
@@ -121,7 +125,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      blinds: [
+      blinds: [ //Array<Blind>(),
         new Blind(1,1,2,0,10),
         new Blind(2,2,4,0,10),
         new Blind('BREAK',null,null,null,5),
@@ -144,13 +148,13 @@ export default Vue.extend({
         new Blind('BREAK',null,null,null,0),
         new Blind('BREAK',null,null,null,0),
         new Blind('BREAK',null,null,null,0)
-        */
+       */
       ],
-      innerLevel: 0,
+      lv: 0,
       sec: 0,
       isActive: false,
       dialog: false,
-      soundEnable: false
+      soundEnable: true
     }
   },
   methods: {
@@ -163,7 +167,11 @@ export default Vue.extend({
       }
     },
     resetTime(): void {
-      this.sec = this.blinds[this.innerLevel].time * 60;
+      if (this.currentStatus === 'EMPTY') {
+        this.sec = 0;
+      } else {
+        this.sec = this.blinds[this.lv].time * 60;
+      }
     },
     start(): void {
       this.isActive = true;
@@ -172,22 +180,24 @@ export default Vue.extend({
       this.isActive = false;
     },
     levelUp(): void {
-      if (this.innerLevel === this.blinds.length - 1) {
+      if (this.lv >= this.blinds.length - 1) {
         this.stop();
       } else {
-        this.innerLevel++
+        this.lv++
         this.resetTime();
       }
     },
     addTime(n: number): void {
-      this.sec = Math.max(0, Math.min(this.blinds[this.innerLevel].time * 60, this.sec + n));
+      if (this.currentStatus === 'EMPTY') return;
+      this.sec = Math.max(0, Math.min(this.blinds[this.lv].time * 60, this.sec + n));
     },
     addLevel(n: number): void {
-      this.innerLevel = Math.max(0, Math.min(this.blinds.length - 1, this.innerLevel + n));
+      if (this.currentStatus === 'EMPTY') return;
+      this.lv = Math.max(0, Math.min(this.blinds.length - 1, this.lv + n));
     },
     updateBlinds(payload: Array<Blind>): void {
       this.blinds = payload;
-      this.innerLevel = 0;
+      this.lv = 0;
       this.resetTime();
       this.dialog = false;
     },
@@ -206,25 +216,44 @@ export default Vue.extend({
       return timeStrings[0] + ':' + timeStrings[1];
     },
     formatBlinds(): string {
-      if (this.currentIsBreak) {
+      if (this.currentStatus !== 'BLIND') {
         return '-';
       }
-      return this.blinds[this.innerLevel].sb
+      return this.blinds[this.lv].sb
              + '/'
-             + this.blinds[this.innerLevel].bb;
+             + this.blinds[this.lv].bb;
     },
     formatNextBlinds(): string {
-      if (this.innerLevel === this.blinds.length - 1) {
-        return 'None'
+      if (this.nextStatus === 'EMPTY') {
+        return '-'
       }
-      if (this.blinds[this.innerLevel + 1].isBreak()) {
-        return 'BREAK (' + this.blinds[this.innerLevel + 1].time + 'min)'
+      if (this.nextStatus === 'BREAK') {
+        return 'BREAK (' + this.blinds[this.lv + 1].time + 'min)'
       }
-      return this.blinds[this.innerLevel + 1].sb + '/' + this.blinds[this.innerLevel + 1].bb +
-        '(' + this.blinds[this.innerLevel + 1].ante + ')'
+      return this.blinds[this.lv + 1].sb + '/' + this.blinds[this.lv + 1].bb +
+        '(' + this.blinds[this.lv + 1].ante + ')'
     },
-    currentIsBreak(): boolean {
-      return this.blinds[this.innerLevel].isBreak();
+    formatAnte(): string {
+      if (this.currentStatus !== 'BLIND') {
+        return '-';
+      }
+      return this.blinds[this.lv].ante + '';
+    },
+    currentStatus(): Status {
+      if (this.lv > this.blinds.length - 1) {
+        return 'EMPTY';
+      } else if (this.blinds[this.lv].level === 'BREAK') {
+        return 'BREAK';
+      }
+      return 'BLIND';
+    },
+    nextStatus(): Status {
+      if (this.lv >= this.blinds.length - 1) {
+        return 'EMPTY';
+      } else if (this.blinds[this.lv + 1].level === 'BREAK') {
+        return 'BREAK';
+      }
+      return 'BLIND';
     }
   },
   mounted(): void {

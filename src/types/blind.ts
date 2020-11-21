@@ -17,7 +17,4 @@ export default class Blind {
     this.ante = ante;
     this.time = time;
   }
-  isBreak(): boolean {
-    return this.level === 'BREAK';
-  }
 }
