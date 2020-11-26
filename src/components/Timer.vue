@@ -113,7 +113,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import Blind from '@/types/blind'
+import Blind from '@/blind'
 import Structure from '@/components/Structure.vue'
 
 type Status = 'EMPTY' | 'BREAK' | 'BLIND';

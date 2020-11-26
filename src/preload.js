@@ -1,0 +1,12 @@
+// import { contextBridge, ipcRenderer } from 'electron';
+const { contextBridge, ipcRenderer } = require('electron');
+
+contextBridge.exposeInMainWorld('api', {
+
+  import: async () => {
+    return await ipcRenderer.invoke('import');
+  },
+  export: async (data) => {
+    await ipcRenderer.invoke('export', data);
+  }
+})

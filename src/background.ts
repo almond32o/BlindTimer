@@ -1,9 +1,10 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain, dialog } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import path from 'path';
+import fs from 'fs';
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -12,16 +13,34 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
 
+/**
+ * Preload スクリプトの所在するディレクトリを取得
+ *
+ * 開発時には webpack の出力先を指定し、
+ * electron-builder によるパッケージ後には 'asarUnpack' オプションに
+ * 設定したディレクトリを返す
+ */
+const getResourceDirectory = (): string => {
+  return process.env.NODE_ENV === 'development'
+    ? path.join(process.cwd(), 'dist')
+    : path.join(process.resourcesPath, 'app.asar.unpack', 'dist');
+};
+
+let win: BrowserWindow;
+
 async function createWindow() {
   // Create the browser window.
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       nodeIntegration: (process.env
-          .ELECTRON_NODE_INTEGRATION as unknown) as boolean
+          .ELECTRON_NODE_INTEGRATION as unknown) as boolean,
+      contextIsolation: true,
+      preload: path.join(__dirname, 'preload.js')
+      // preload: path.resolve(getResourceDirectory(), 'preload.js') // path.resolve('src/preload.js')*/
     }
   })
 
@@ -105,3 +124,46 @@ function registerLocalAudioProtocol () {
     }
   })
 }
+
+ipcMain.handle('import', (event: Electron.IpcMainInvokeEvent): string | null => {
+  try {
+    const filePaths: string[] | undefined = dialog.showOpenDialogSync(win, {
+      filters: [
+        {name: 'text files', extensions: ['csv', 'txt']}
+      ],
+      properties: [
+        'openFile'
+      ],
+      defaultPath: './'
+    });
+    if (filePaths === undefined) return null;
+    return fs.readFileSync(filePaths[0], 'utf-8').toString();
+  } catch(err) {
+    dialog.showMessageBoxSync({
+      title: 'File import error',
+      type: 'error',
+      message: 'Failed to import'
+    });
+    return null;
+  }
+})
+
+ipcMain.handle('export', (event: Electron.IpcMainInvokeEvent, data: string) => {
+  try {
+    const filePaths: string | undefined = dialog.showSaveDialogSync(win, {
+      filters: [
+        {name: 'csv', extensions: ['csv']}
+      ],
+      defaultPath: './structure.csv'
+    });
+    if (filePaths === undefined) return;
+    fs.writeFileSync(filePaths, data, 'utf-8');
+  } catch(err) {
+    console.log('error')
+    dialog.showMessageBox({
+      title: 'File export error',
+      type: 'error',
+      message: 'Failed to export'
+    });
+  }
+})

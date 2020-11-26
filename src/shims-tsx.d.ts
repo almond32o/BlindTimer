@@ -10,4 +10,10 @@ declare global {
       [elem: string]: any;
     }
   }
+  interface Window {
+    api: {
+      import: () => Promise<string|null>,
+      export: (string) => Promise<void>
+    }
+  }
 }

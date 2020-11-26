@@ -1,4 +1,4 @@
-import Blind from '@/types/blind';
+import Blind from '@/blind';
 
 type ItemType = 'BREAK' | number | null;
 
@@ -18,6 +18,7 @@ export function parse(input: string): Array<Blind> {
   return input
     .split('\n')
     .splice(1)
+    .filter((str: string): boolean => str.length > 0)
     .map((str: string): Blind => {
       const item = str.split(',').map((str: string): ItemType => {
         if (str === '') return null;

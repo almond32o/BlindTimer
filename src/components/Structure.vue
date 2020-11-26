@@ -136,7 +136,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { cloneDeep } from 'lodash'
-import Blind from '@/types/blind'
+import Blind from '@/blind'
 import * as parser from '@/parser'
 
 export default Vue.extend({
@@ -210,10 +210,27 @@ export default Vue.extend({
       }
     },
     importBlinds(): void {
-      console.log(parser.dump(this.blinds_));
+      window.api.import().then(
+        (value: string | null) => {
+          if (value === null) return;
+          this.blinds_ = parser.parse(value);
+        }
+      ).catch(
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        //@ts-ignore
+        (reason: any) => {
+          console.log(reason);
+        }
+      );
     },
     exportBlinds(): void {
-      return
+      window.api.export(parser.dump(this.blinds_)).catch(
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        //@ts-ignore
+        (reason: any) => {
+          console.log(reason);
+        }
+      );
     }
   },
   watch: {
