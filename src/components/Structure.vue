@@ -135,8 +135,9 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import Blind from '@/types/blind'
 import { cloneDeep } from 'lodash'
+import Blind from '@/types/blind'
+import * as parser from '@/parser'
 
 export default Vue.extend({
   name: 'Structure',
@@ -209,7 +210,7 @@ export default Vue.extend({
       }
     },
     importBlinds(): void {
-      return
+      console.log(parser.dump(this.blinds_));
     },
     exportBlinds(): void {
       return
