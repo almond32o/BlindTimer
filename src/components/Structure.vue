@@ -15,7 +15,7 @@
     </v-app-bar>
     <v-container>
       <v-row justify="center" style="margin:3rem 0 0 0">
-        <v-col style="max-width:50rem">
+        <v-col style="max-width:40rem">
           <v-data-table
             :headers="headers"
             :items="blinds_"
@@ -25,16 +25,20 @@
             class="elevation-3"
           >
             <template v-slot:item.actions="{ item }">
-              <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
-              <v-icon small class="mr-2" @click="deleteItem(item)">mdi-delete</v-icon>
+              <v-row justify="space-around">
+                <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
+                <v-icon small class="mr-2" @click="deleteItem(item)">mdi-delete</v-icon>
+                <v-icon small class="mr-2" @click="swapItem(item, -1)">mdi-chevron-up</v-icon>
+                <v-icon small class="mr-2" @click="swapItem(item, 1)">mdi-chevron-down</v-icon>
+              </v-row>
             </template>
           </v-data-table>
         </v-col>
         <v-col style="max-width:10rem">
-          <v-row justify="center">
-            <v-dialog persistent v-model="dialog" max-width="500">
-              <template v-slot:activator="{on,attrs}">
-                <v-card flat style="position:fixed">
+          <v-row justify="center" style="position:fixed">
+            <v-main>
+              <v-dialog persistent v-model="dialog" max-width="500">
+                <template v-slot:activator="{on,attrs}">
                   <v-row justify="center">
                     <v-btn
                     width="7rem"
@@ -56,56 +60,72 @@
                       @click="setItemToBreak"
                     >Add Break</v-btn>
                   </v-row>
+                </template>
+                <v-card>
+                  <v-card-title>
+                    {{ dialogTitle }}
+                  </v-card-title>
+                  <v-card-text>
+                    <v-container>
+                      <v-row>
+                        <v-col>
+                          <v-text-field
+                            v-bind:disabled="editedIsBreak"
+                            v-model="editedItem.sb"
+                            type="number"
+                            label="SB"
+                          />
+                        </v-col>
+                        <v-col>
+                          <v-text-field
+                            v-bind:disabled="editedIsBreak"
+                            v-model="editedItem.bb"
+                            type="number"
+                            label="BB"
+                          />
+                        </v-col>
+                        <v-col>
+                          <v-text-field
+                            v-bind:disabled="editedIsBreak"
+                            v-model="editedItem.ante"
+                            type="number"
+                            label="ANTE"
+                          />
+                        </v-col>
+                        <v-col>
+                        <v-text-field
+                          v-model="editedItem.time"
+                          type="number"
+                          label="TIME"
+                        />
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer/>
+                    <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
+                    <v-btn color="blue darken-1" text @click="save">OK</v-btn>
+                  </v-card-actions>
                 </v-card>
-              </template>
-              <v-card>
-                <v-card-title>
-                  {{ dialogTitle }}
-                </v-card-title>
-                <v-card-text>
-                  <v-container>
-                    <v-row>
-                      <v-col>
-                        <v-text-field
-                          v-bind:disabled="editedIsBreak"
-                          v-model="editedItem.sb"
-                          type="number"
-                          label="SB"
-                        />
-                      </v-col>
-                      <v-col>
-                        <v-text-field
-                          v-bind:disabled="editedIsBreak"
-                          v-model="editedItem.bb"
-                          type="number"
-                          label="BB"
-                        />
-                      </v-col>
-                      <v-col>
-                        <v-text-field
-                          v-bind:disabled="editedIsBreak"
-                          v-model="editedItem.ante"
-                          type="number"
-                          label="ANTE"
-                        />
-                      </v-col>
-                      <v-col>
-                      <v-text-field
-                        v-model="editedItem.time"
-                        type="number"
-                        label="TIME"
-                      />
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer/>
-                  <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
-                  <v-btn color="blue darken-1" text @click="save">OK</v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
+              </v-dialog>
+              <v-row justify="center" style="margin: 2rem 0 0 0">
+                <v-btn
+                  class="mb-2"
+                  width="7rem"
+                  dark color="orange darken-1"
+                  @click="importBlinds"
+                > import </v-btn>
+              </v-row>
+              <v-row justify="center">
+                <v-btn
+                  class="mb-2"
+                  width="7rem"
+                  dark color="green darken-1"
+                  @click="exportBlinds"
+                > export </v-btn>
+              </v-row>
+            </v-main>
           </v-row>
         </v-col>
       </v-row>
@@ -177,6 +197,22 @@ export default Vue.extend({
     },
     closeDialogAndUpdate(): void {
       this.$emit('update-blinds', this.blinds_);
+    },
+    swapItem(item: Blind, n: -1 | 1): void {
+      const index = this.blinds_.indexOf(item);
+      if (index + n < 0 || index + n >= this.blinds_.length) return;
+      const next = this.blinds_[index + n];
+      if (n === -1) {
+        this.blinds_.splice(index + n, 2, item, next);
+      } else {
+        this.blinds_.splice(index, 2, next, item);
+      }
+    },
+    importBlinds(): void {
+      return
+    },
+    exportBlinds(): void {
+      return
     }
   },
   watch: {
