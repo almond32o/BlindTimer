@@ -167,17 +167,19 @@ export default Vue.extend({
       if (this.lv >= this.blinds.length - 1) {
         this.stop();
       } else {
-        this.lv++
-        this.resetTime();
+        this.addLevel(1);
       }
     },
     addTime(n: number): void {
       if (this.currentStatus === 'EMPTY') return;
       this.sec = Math.max(0, Math.min(this.blinds[this.lv].time * 60, this.sec + n));
     },
-    addLevel(n: number): void {
-      if (this.currentStatus === 'EMPTY') return;
-      this.lv = Math.max(0, Math.min(this.blinds.length - 1, this.lv + n));
+    addLevel(n: -1 | 1): void {
+      if (this.currentStatus === 'EMPTY' ||
+          this.lv + n < 0 ||
+          this.lv + n >= this.blinds.length) return;
+      this.lv += n;
+      this.resetTime();
     },
     updateBlinds(payload: Array<Blind>): void {
       this.blinds = payload;
