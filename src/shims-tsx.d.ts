@@ -13,7 +13,8 @@ declare global {
   interface Window {
     api: {
       import: () => Promise<string|null>,
-      export: (string) => Promise<void>
+      export: (string) => Promise<void>,
+      parseError: () => Promise<void>
     }
   }
 }

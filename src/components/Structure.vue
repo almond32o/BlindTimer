@@ -213,12 +213,14 @@ export default Vue.extend({
       window.api.import().then(
         (value: string | null) => {
           if (value === null) return;
-          this.blinds_ = parser.parse(value);
+          const res = parser.parse(value);
+          if (res === null) window.api.parseError();
+          else this.blinds_ = res;
         }
       ).catch(
         // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         //@ts-ignore
-        (reason: any) => {
+        (reason) => {
           console.log(reason);
         }
       );
@@ -227,7 +229,7 @@ export default Vue.extend({
       window.api.export(parser.dump(this.blinds_)).catch(
         // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         //@ts-ignore
-        (reason: any) => {
+        (reason) => {
           console.log(reason);
         }
       );

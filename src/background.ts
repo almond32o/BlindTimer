@@ -167,3 +167,11 @@ ipcMain.handle('export', (event: Electron.IpcMainInvokeEvent, data: string) => {
     });
   }
 })
+
+ipcMain.handle('parse-error', (event: Electron.IpcMainInvokeEvent, data: string) => {
+  dialog.showMessageBox({
+    title: 'Parse error',
+    type: 'error',
+    message: 'Failed to import: file format is incorrect'
+  })
+})

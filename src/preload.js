@@ -8,5 +8,8 @@ contextBridge.exposeInMainWorld('api', {
   },
   export: async (data) => {
     await ipcRenderer.invoke('export', data);
+  },
+  parseError: async () => {
+    ipcRenderer.invoke('parse-error');
   }
 })
