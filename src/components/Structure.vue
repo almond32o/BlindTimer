@@ -22,7 +22,7 @@
             :items-per-page="-1"
             disable-sort
             dense
-            class="elevation-4"
+            class="elevation-4 table"
           >
             <template v-slot:item.actions="{ item }">
               <v-row justify="space-around">

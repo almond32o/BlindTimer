@@ -11,7 +11,8 @@ export default new Vuetify({
         background: '#2F3241',
         text: '#9FEAF9',
         card: '#3E4654',
-        header: colors.cyan.darken4
+        header: colors.cyan.darken4,
+        table: colors.blueGrey.darken4
       },
       light: {
         background: '#F6F7FF',
