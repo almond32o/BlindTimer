@@ -4,12 +4,12 @@
       dense
       fixed
       dark
-      color="cyan darken-1"
+      color="header"
     >
       <v-toolbar-title style="user-select:none">Edit Structure</v-toolbar-title>
       <v-spacer/>
       <v-toolbar-items>
-        <v-btn text @click="closeDialog">Cancel</v-btn>
+        <v-btn class="font-weight-light" text @click="closeDialog">Cancel</v-btn>
         <v-btn text @click="closeDialogAndUpdate">Save</v-btn>
       </v-toolbar-items>
     </v-app-bar>
@@ -22,7 +22,7 @@
             :items-per-page="-1"
             disable-sort
             dense
-            class="elevation-3"
+            class="elevation-4"
           >
             <template v-slot:item.actions="{ item }">
               <v-row justify="space-around">

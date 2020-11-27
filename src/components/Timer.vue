@@ -1,6 +1,6 @@
 <template>
-  <v-row>
-    <v-col class="level" style="max-width:20vw;text-align:center">
+  <v-row class="font-weight-light">
+    <v-col :style="styleProp.text" class="level" style="max-width:20vw;text-align:center">
       <div v-if="currentStatus==='EMPTY'">
         EMPTY
       </div>
@@ -13,20 +13,20 @@
     </v-col>
     <v-col>
       <v-row style="align-content:center;height:95vh">
-        <v-row class="text-center">
-          <v-col class="clock indigo--text">
+        <v-row :style="styleProp.text" class="text-center">
+          <v-col class="clock">
             {{ formatTime }}
           </v-col>
         </v-row>
         <v-row justify="center">
-          <v-card class="current" outlined width="60vw" style="margin: 0.5rem 0; padding:0 1em">
-            <v-row justify="space-between" align="center">
+          <v-card class="current mb-2" color="card" outlined width="60vw" style="padding:0 1em">
+            <v-row :style="styleProp.text" justify="space-between" align="center">
               <v-col>BLINDS:</v-col>
               <v-col style="text-align:right">
                 {{ formatBlinds }}
               </v-col>
             </v-row>
-            <v-row align="space-between">
+            <v-row  :style="styleProp.text" align="space-between">
               <v-col>ANTE:</v-col>
               <v-col style="text-align:right">
                 {{ formatAnte }}
@@ -35,8 +35,8 @@
           </v-card>
         </v-row>
         <v-row justify="center">
-          <v-card class="next" outlined width=50vw style="padding:0 0.5em">
-            <v-row justify="space-between" align="center">
+          <v-card class="next" color="card" outlined width=50vw style="padding:0 0.5em">
+            <v-row :style="styleProp.text" justify="space-between" align="center">
               <v-col>NEXT:</v-col>
               <v-col style="text-align:right">{{ formatNextBlinds }}</v-col>
             </v-row>
@@ -44,25 +44,25 @@
         </v-row>
         <v-container>
         <v-row justify="center">
-            <v-card flat width="15rem">
+            <v-card color="background" flat width="15rem">
               <v-container>
                 <v-row justify="space-between">
-                  <v-btn icon outlined @click="addLevel(-1)">
+                  <v-btn color="text" icon outlined @click="addLevel(-1)">
                     <v-icon>mdi-skip-previous</v-icon>
                   </v-btn>
-                  <v-btn icon outlined @click="addTime(30)">
+                  <v-btn color="text" icon outlined @click="addTime(30)">
                     <v-icon>mdi-chevron-double-left</v-icon>
                   </v-btn>
-                  <v-btn v-if="!isActive" icon outlined @click="start">
+                  <v-btn color="text" v-if="!isActive" icon outlined @click="start">
                     <v-icon>mdi-play</v-icon>
                   </v-btn>
-                  <v-btn v-else icon outlined @click="stop">
+                  <v-btn color="text" v-else icon outlined @click="stop">
                     <v-icon>mdi-pause</v-icon>
                   </v-btn>
-                  <v-btn icon outlined @click="addTime(-30)">
+                  <v-btn color="text" icon outlined @click="addTime(-30)">
                     <v-icon>mdi-chevron-double-right</v-icon>
                   </v-btn>
-                  <v-btn icon outlined @click="addLevel(1)">
+                  <v-btn color="text" icon outlined @click="addLevel(1)">
                     <v-icon>mdi-skip-next</v-icon>
                   </v-btn>
                 </v-row>
@@ -83,8 +83,8 @@
             transition="dialog-bottom-transition"
           >
             <template v-slot:activator="{ on, attrs }">
-              <v-btn fab v-bind="attrs" v-on="on">
-                <v-icon>mdi-table</v-icon>
+              <v-btn color="card" fab v-bind="attrs" v-on="on">
+                <v-icon color="text">mdi-table</v-icon>
               </v-btn>
             </template>
             <Structure
@@ -96,14 +96,14 @@
           </v-dialog>
         </v-row>
         <v-row justify="center" style="margin:1rem 0">
-          <v-btn fab @click="sound.enable=!sound.enable">
-            <v-icon v-if="sound.enable">mdi-volume-high</v-icon>
-            <v-icon v-else>mdi-volume-off</v-icon>
+          <v-btn color="card" fab @click="sound.enable=!sound.enable">
+            <v-icon color="text" v-if="sound.enable">mdi-volume-high</v-icon>
+            <v-icon color="text" v-else>mdi-volume-off</v-icon>
           </v-btn>
         </v-row>
         <v-row justify="center">
-          <v-btn fab @click="changeTheme">
-            <v-icon>mdi-brightness-6</v-icon>
+          <v-btn color="card" fab @click="changeTheme">
+            <v-icon color="text">mdi-brightness-6</v-icon>
           </v-btn>
         </v-row>
       </v-container>
@@ -119,7 +119,9 @@ import Structure from '@/components/Structure.vue'
 type Status = 'EMPTY' | 'BREAK' | 'BLIND';
 
 export default Vue.extend({
-  props: {},
+  props: {
+    styleProp: Object
+  },
   components: {
     Structure
   },
@@ -262,7 +264,7 @@ export default Vue.extend({
   user-select: none;
 }
 .clock {
-  font-size: 20vh;
+  font-size: 22vh;
   user-select: none;
 }
 .current {
