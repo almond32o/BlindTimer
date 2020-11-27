@@ -1,6 +1,13 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, ipcMain, dialog } from 'electron'
+import {
+  app,
+  protocol,
+  BrowserWindow,
+  ipcMain,
+  dialog,
+} from 'electron'
+import localShortcut from 'electron-localshortcut'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import path from 'path';
@@ -176,5 +183,11 @@ ipcMain.handle('parse-error', (event: Electron.IpcMainInvokeEvent, data: string)
     title: 'Parse error',
     type: 'error',
     message: 'Failed to import: file format is incorrect'
+  })
+})
+
+app.whenReady().then(() => {
+  localShortcut.register('Space', () => {
+    win.webContents.send('keypress-space', 'msg');
   })
 })

@@ -14,7 +14,8 @@ declare global {
     api: {
       import: () => Promise<string|null>,
       export: (string) => Promise<void>,
-      parseError: () => Promise<void>
+      parseError: () => Promise<void>,
+      on: (string, Function) => Promise<void>
     }
   }
 }

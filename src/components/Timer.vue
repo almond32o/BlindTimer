@@ -248,8 +248,16 @@ export default Vue.extend({
     }
   },
   mounted(): void {
-    setInterval(this.count, 100);
+    setInterval(
+      this.count,
+      process.env.NODE_ENV !== 'production' ? 100 : 1000
+    );
     this.resetTime();
+    window.api.on('keypress-space', () => {
+      if (!this.dialog) {
+        this.isActive = !this.isActive;
+      }
+    })
   }
 });
 </script>

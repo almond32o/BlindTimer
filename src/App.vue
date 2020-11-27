@@ -28,9 +28,6 @@ export default Vue.extend({
         'card': 'background:' + this.$vuetify.theme.themes[this.theme].card?.toString()
       }
     }
-  },
-  mounted(): void {
-    console.log(this.style);
   }
 });
 </script>

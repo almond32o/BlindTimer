@@ -11,5 +11,8 @@ contextBridge.exposeInMainWorld('api', {
   },
   parseError: async () => {
     ipcRenderer.invoke('parse-error');
+  },
+  on: async (channel, func) => {
+    ipcRenderer.on(channel, (event, ...args) => func(...args));
   }
 })
