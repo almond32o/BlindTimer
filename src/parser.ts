@@ -17,6 +17,7 @@ export function dump(blinds: Array<Blind>): string {
 export function parse(input: string): Array<Blind> | null {
   try {
     return input
+      .replace(/\r/g, '') // CRLF
       .split('\n')
       .splice(1)
       .filter((str: string): boolean => str.length > 0)
