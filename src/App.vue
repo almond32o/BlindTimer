@@ -39,4 +39,7 @@ export default Vue.extend({
 ::-webkit-scrollbar {
   display: none;
 }
+body {
+  overflow: hidden;
+}
 </style>

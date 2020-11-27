@@ -39,10 +39,13 @@ async function createWindow() {
       nodeIntegration: (process.env
           .ELECTRON_NODE_INTEGRATION as unknown) as boolean,
       contextIsolation: true,
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
       // preload: path.resolve(getResourceDirectory(), 'preload.js') // path.resolve('src/preload.js')*/
-    }
+    },
+    autoHideMenuBar: true
   })
+
+  if (!isDevelopment) win.setMenu(null);
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode

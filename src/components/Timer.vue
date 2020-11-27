@@ -19,26 +19,22 @@
           </v-col>
         </v-row>
         <v-row justify="center">
-          <v-card class="current mb-2" color="card" outlined width="60vw" style="padding:0 1em">
-            <v-row :style="styleProp.text" justify="space-between" align="center">
-              <v-col>BLINDS:</v-col>
-              <v-col style="text-align:right">
-                {{ formatBlinds }}
-              </v-col>
+          <v-card class="current mb-2 pl-8 pr-8 pt-1 pb-1" color="card" outlined width="60vw">
+            <v-row :style="styleProp.text" class="pa-1" justify="space-between" align="center">
+              <span>BLINDS:</span>
+              <span>{{ formatBlinds }}</span>
             </v-row>
-            <v-row  :style="styleProp.text" align="space-between">
-              <v-col>ANTE:</v-col>
-              <v-col style="text-align:right">
-                {{ formatAnte }}
-              </v-col>
+            <v-row :style="styleProp.text" class="pa-1" justify="space-between">
+              <span>ANTE:</span>
+              <span>{{ formatAnte }}</span>
             </v-row>
           </v-card>
         </v-row>
         <v-row justify="center">
-          <v-card class="next" color="card" outlined width=50vw style="padding:0 0.5em">
-            <v-row :style="styleProp.text" justify="space-between" align="center">
-              <v-col>NEXT:</v-col>
-              <v-col style="text-align:right">{{ formatNextBlinds }}</v-col>
+          <v-card class="next pl-5 pr-5 pt-1 pb-1" color="card" outlined width=50vw>
+            <v-row :style="styleProp.text" class="pa-1" justify="space-between" align="center">
+              <span>NEXT:</span>
+              <span>{{ formatNextBlinds }}</span>
             </v-row>
           </v-card>
         </v-row>
@@ -264,15 +260,15 @@ export default Vue.extend({
   user-select: none;
 }
 .clock {
-  font-size: 22vh;
+  font-size: 23vh;
   user-select: none;
 }
 .current {
-  font-size: 7vh;
+  font-size: 8vh;
   user-select: none;
 }
 .next {
-  font-size: 5vh;
+  font-size: 6vh;
   user-select: none;
 }
 </style>
