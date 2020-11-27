@@ -123,14 +123,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      blinds: [ //Array<Blind>(),
-        new Blind(1,1,2,0,2),
-        new Blind(2,2,4,0,10),
-        new Blind('BREAK',null,null,null,5),
-        new Blind(3,3,6,0,8),
-        new Blind(4,5,10,10,8),
-        new Blind(5,1000,2000,2000,1)
-      ],
+      blinds: Array<Blind>(),
       lv: 0,
       sec: 0,
       isActive: false,
@@ -272,7 +265,7 @@ export default Vue.extend({
   user-select: none;
 }
 .current {
-  font-size: 8vh;
+  font-size: 9vh;
   user-select: none;
 }
 .next {

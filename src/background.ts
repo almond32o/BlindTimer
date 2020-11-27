@@ -20,19 +20,6 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
 
-/**
- * Preload スクリプトの所在するディレクトリを取得
- *
- * 開発時には webpack の出力先を指定し、
- * electron-builder によるパッケージ後には 'asarUnpack' オプションに
- * 設定したディレクトリを返す
- */
-const getResourceDirectory = (): string => {
-  return process.env.NODE_ENV === 'development'
-    ? path.join(process.cwd(), 'dist')
-    : path.join(process.resourcesPath, 'app.asar.unpack', 'dist');
-};
-
 let win: BrowserWindow;
 
 async function createWindow() {
@@ -47,7 +34,6 @@ async function createWindow() {
           .ELECTRON_NODE_INTEGRATION as unknown) as boolean,
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),
-      // preload: path.resolve(getResourceDirectory(), 'preload.js') // path.resolve('src/preload.js')*/
     },
     autoHideMenuBar: true
   })
@@ -188,6 +174,6 @@ ipcMain.handle('parse-error', (event: Electron.IpcMainInvokeEvent, data: string)
 
 app.whenReady().then(() => {
   localShortcut.register('Space', () => {
-    win.webContents.send('keypress-space', 'msg');
+    win.webContents.send('keypress-space');
   })
 })
