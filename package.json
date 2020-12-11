@@ -1,6 +1,6 @@
 {
   "name": "blindtimer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -13,9 +13,11 @@
   },
   "main": "background.js",
   "dependencies": {
+    "@mdi/font": "^5.8.55",
     "@types/lodash": "^4.14.165",
     "core-js": "^3.6.5",
     "electron-localshortcut": "^3.2.1",
+    "roboto-fontface": "^0.10.0",
     "vue": "^2.6.11",
     "vuetify": "^2.2.11"
   },
